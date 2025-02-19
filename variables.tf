@@ -4,6 +4,12 @@ variable "aws_region" {
   default     = "us-east-1"
 }
 
+variable "stage_name" {
+  description = "The name of the stage for the API Gateway"
+  type        = string
+  default     = "dev"
+}
+
 variable "aws_profile" {
   description = "The AWS CLI profile to use"
   type        = string

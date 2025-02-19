@@ -122,9 +122,25 @@ resource "aws_api_gateway_integration" "get_lambda_integration" {
   rest_api_id             = aws_api_gateway_rest_api.transaction_api.id
   resource_id             = aws_api_gateway_resource.transaction_resource.id
   http_method             = aws_api_gateway_method.get_transaction_method.http_method
-  integration_http_method = "POST"
+  integration_http_method = "GET"
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.transaction_handler.invoke_arn
+}
+
+resource "aws_api_gateway_deployment" "transaction_api_deployment" {
+  rest_api_id = aws_api_gateway_rest_api.transaction_api.id
+  stage_name  = var.stage_name
+
+  depends_on = [
+    aws_api_gateway_integration.post_lambda_integration,
+    aws_api_gateway_integration.get_lambda_integration
+  ]
+}
+
+resource "aws_api_gateway_stage" "transaction_api_stage" {
+  rest_api_id   = aws_api_gateway_rest_api.transaction_api.id
+  stage_name    = var.stage_name
+  deployment_id = aws_api_gateway_deployment.transaction_api_deployment.id
 }
 
 resource "aws_lambda_permission" "apigw_lambda" {
@@ -144,5 +160,5 @@ output "lambda_function_name" {
 }
 
 output "api_gateway_url" {
-  value = aws_api_gateway_rest_api.transaction_api.execution_arn
+  value = "https://${aws_api_gateway_rest_api.transaction_api.id}.execute-api.${var.aws_region}.amazonaws.com/${var.stage_name}/transactions"
 }
