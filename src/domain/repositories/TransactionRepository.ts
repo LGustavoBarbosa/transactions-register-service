@@ -2,6 +2,7 @@ import { Transaction } from "../entities/Transaction";
 import { Database } from "../../domain/repositories/Database";
 
 const TABLE_NAME = "Transactions";
+const INDEX_NAME = "UserIdCreatedAtIndex";
 
 interface ITransactionRepo {
   create(transaction: Transaction): Promise<void>;
@@ -44,6 +45,7 @@ export class TransactionRepository implements ITransactionRepo {
 
     const params = {
       TableName: TABLE_NAME,
+      IndexName: INDEX_NAME,
       KeyConditionExpression:
         "userId = :userId AND createdAt BETWEEN :startDate AND :endDate",
       ExpressionAttributeValues: {
