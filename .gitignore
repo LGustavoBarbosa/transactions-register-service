@@ -1,2 +1,3 @@
 node_modules
 lambda_function_payload.zip
+.terraform
