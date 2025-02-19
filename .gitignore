@@ -1,4 +1,2 @@
 node_modules
-terraform.tfstate.backup
 lambda_function_payload.zip
-.terraform
