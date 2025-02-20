@@ -1,60 +1,55 @@
 import { Transaction } from "../entities/Transaction";
-import { Database } from "../../domain/repositories/Database";
+import {
+  queryItems,
+  putItem,
+} from "../../infrastructure/database/DynamoDBDatabase";
 
 const TABLE_NAME = "Transactions";
 const INDEX_NAME = "UserIdCreatedAtIndex";
 
-interface ITransactionRepo {
-  create(transaction: Transaction): Promise<void>;
-  findByUserId(
-    userId: string,
-    limit?: number,
-    lastEvaluatedKey?: string
-  ): Promise<{ transactions: Transaction[]; lastEvaluatedKey?: string }>;
-  findByUserIdAndMonth(userId: string, month: string): Promise<Transaction[]>;
-}
+export const createTransaction = async (
+  transaction: Transaction
+): Promise<void> => {
+  await putItem(TABLE_NAME, transaction);
+};
 
-export class TransactionRepository implements ITransactionRepo {
-  constructor(private database: Database) {}
+export const findByUserId = async (
+  userId: string,
+  limit = 10,
+  lastEvaluatedKey?: string
+): Promise<{ transactions: Transaction[]; lastEvaluatedKey?: string }> => {
+  const params: any = {
+    TableName: TABLE_NAME,
+    KeyConditionExpression: "userId = :userId",
+    ExpressionAttributeValues: { ":userId": userId },
+    Limit: limit,
+  };
 
-  async create(transaction: Transaction): Promise<void> {
-    await this.database.put(TABLE_NAME, transaction);
-  }
+  const result = await queryItems(params);
+  return {
+    transactions: result.Items as Transaction[],
+    lastEvaluatedKey: result.LastEvaluatedKey,
+  };
+};
 
-  async findByUserId(userId: string, limit = 10, lastEvaluatedKey?: string) {
-    const params: any = {
-      TableName: TABLE_NAME,
-      KeyConditionExpression: "userId = :userId",
-      ExpressionAttributeValues: { ":userId": userId },
-      Limit: limit,
-    };
+export const findByUserIdAndMonth = async (
+  userId: string,
+  month: string
+): Promise<Transaction[]> => {
+  const startDate = `${month}-01`;
+  const endDate = `${month}-31`;
 
-    const result = await this.database.query(params);
-    return {
-      transactions: result.Items as Transaction[],
-      lastEvaluatedKey: result.LastEvaluatedKey?.id,
-    };
-  }
-
-  async findByUserIdAndMonth(
-    userId: string,
-    month: string
-  ): Promise<Transaction[]> {
-    const startDate = `${month}-01`;
-    const endDate = `${month}-31`;
-
-    const params = {
-      TableName: TABLE_NAME,
-      IndexName: INDEX_NAME,
-      KeyConditionExpression:
-        "userId = :userId AND createdAt BETWEEN :startDate AND :endDate",
-      ExpressionAttributeValues: {
-        ":userId": userId,
-        ":startDate": startDate,
-        ":endDate": endDate,
-      },
-    };
-    const result = await this.database.query(params);
-    return result.Items as Transaction[];
-  }
-}
+  const params = {
+    TableName: TABLE_NAME,
+    IndexName: INDEX_NAME,
+    KeyConditionExpression:
+      "userId = :userId AND createdAt BETWEEN :startDate AND :endDate",
+    ExpressionAttributeValues: {
+      ":userId": userId,
+      ":startDate": startDate,
+      ":endDate": endDate,
+    },
+  };
+  const result = await queryItems(params);
+  return result.Items as Transaction[];
+};
