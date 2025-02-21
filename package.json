@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "build": "npx tsc && node create-zip.js",
-    "test": "jest --watchAll=false"
+    "test": "set AWS_REGION=us-east-1 && jest"
   },
   "keywords": [],
   "author": "",
