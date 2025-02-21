@@ -17,16 +17,16 @@ This project is a financial transaction management system built using TypeScript
    npm install
    ```
 
-## Usage
+## Usage local
 
 1. run docker-compose up
 2. run terraform init && terraform apply
 
 ## API Endpoints
 
-- **POST /api/transactions**: Create a new transaction.
-- **GET /api/transactions**: List transactions for a user.
-- **GET /api/transactions/balance**: Calculate the monthly balance for a user.
+- **POST https://22k6a49dpi.execute-api.us-east-1.amazonaws.com/dev/api/transactions**: Create a new transaction.
+- **GET https://22k6a49dpi.execute-api.us-east-1.amazonaws.com/dev/api/transactions**: List transactions for a user.
+- **GET https://22k6a49dpi.execute-api.us-east-1.amazonaws.com/dev/api/transactions/balance**: Calculate the monthly balance for a user.
 
 ## License
 
