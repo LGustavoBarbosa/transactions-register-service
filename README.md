@@ -24,6 +24,8 @@ This project is a financial transaction management system built using TypeScript
 
 ## API Endpoints
 
+- Collection postman
+  https://www.postman.com/gflashwolf/workspace/transactions-aws/collection/4557313-5e3f4396-ae03-4550-8e9c-3dba5ba6ed14?action=share&creator=4557313&active-environment=4557313-0dc1aa58-1bd8-4a38-84ed-e5c70b73cbf1
 - **POST https://22k6a49dpi.execute-api.us-east-1.amazonaws.com/dev/api/transactions**: Create a new transaction.
 - **GET https://22k6a49dpi.execute-api.us-east-1.amazonaws.com/dev/api/transactions**: List transactions for a user.
 - **GET https://22k6a49dpi.execute-api.us-east-1.amazonaws.com/dev/api/transactions/balance**: Calculate the monthly balance for a user.
